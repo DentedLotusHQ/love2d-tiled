@@ -1,5 +1,5 @@
 Tileset = nil
-TileW, TileH = 16,16
+TileW, TileH = 16, 16
 
 TileTable = nil
 WalkTable = nil
@@ -166,6 +166,13 @@ function love.update(dt)
 
   if math.abs(dx) < 0.01 and math.abs(dy) < 0.01 and Next == nil then
     done = true
+  end
+
+end
+
+function love.keypressed(key)
+  if key == 'escape' then
+    love.event.quit()
   end
 end
 
