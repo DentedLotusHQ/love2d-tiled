@@ -8,3 +8,5 @@ end
 function Goblin:moveTo(point)
   self.position = point
 end
+
+return Goblin

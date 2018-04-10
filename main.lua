@@ -1,7 +1,9 @@
-class = require("lib.middleclass")
-require("game.waypoint")
-require("game.point")
-require("game.entities.goblin")
+class = require("lib.middleclass") -- make class Global for everything
+
+-- There are now local to this file
+local Waypoint = require("game.waypoint")
+local Point = require("game.point")
+local Goblin = require("game.entities.goblin")
 
 Tileset = nil
 TileW, TileH = 16, 16

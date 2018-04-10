@@ -1,7 +1,9 @@
-Waypoint = class("Waypoint")
+local Waypoint = class("Waypoint")
 
 local Grid = require ("lib.jumper.grid") -- The grid class
 local Pathfinder = require ("lib.jumper.pathfinder") -- The pathfinder class
+
+local Point = require("game.point")
 
 function Waypoint:initialize()
   self._waypoints = {}
@@ -51,3 +53,5 @@ end
 function Waypoint:waypoints()
   return self._waypoints
 end
+
+return Waypoint
