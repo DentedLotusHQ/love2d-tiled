@@ -1,12 +1,15 @@
+class = require("lib.middleclass")
+require("game.waypoint")
+require("game.point")
+require("game.entities.goblin")
+
 Tileset = nil
 TileW, TileH = 16, 16
 
 TileTable = nil
 WalkTable = nil
 
-PlayerX = nil
-PlayerY = nil
-PlayerQuad = nil
+Being = nil
 
 NextX = nil
 NextY = nil
@@ -32,40 +35,38 @@ function love.load()
     { 'v', TileW * 2, TileH * 3 }, -- right vertical
     { 'd', TileW, TileH * 4 }, -- door
     { 's', TileW * 5, TileH * 2 }, -- start
-    { 'f', TileW * 6, TileH * 2 }, -- finish
+    { 'x', TileW * 6, TileH * 2 }, -- waypoint
     { '*', TileW * 9, TileH * 8  }, -- castle
     { '^', TileW * 8, TileH }  -- spikes
   }
 
-  print("before pairs")
   Quads = {}
   for _,info in ipairs(quadInfo) do
     -- info[1] = character, info[2]= x, info[3] = y
     Quads[info[1]] = love.graphics.newQuad(info[2], info[3], TileW, TileH, tilesetW, tilesetH)
   end
 
-  PlayerQuad = love.graphics.newQuad(TileW, TileH * 20, TileW, TileH, tilesetW, tilesetH)
-
-  print("after pairs")
+  local quad = love.graphics.newQuad(TileW, TileH * 20, TileW, TileH, tilesetW, tilesetH)
+  Being = Goblin:new(quad)
 
   local tileString = [[
 l-----------------------r
-w                    *  v
+w        x           *  v
 w  *                    v
 w              *        v
 w                       v
 w    ##  ###  ### # #   v
 w   #  # #  # #   # #   v
-w f #  # # *# #   # #   v
+w x #  # # *# #   # #   v
 w   #  # ###  ### # #   v
 w   #  # #  # #    #  * v
 w * #  # #  # #    #    v
-w   #  # #* # #  * #    v
+w   #  # #* # #  * # x  v
 w    ##  ###  ###  #    v
 w                       v
 w   *****************   v
 w           s           v
-w  *                  * v
+w  *              x   * v
 b----------d------------i
 ]]
 
@@ -73,10 +74,8 @@ b----------d------------i
   WalkTable = {}
   PrintTable = "{\n"
 
-  local width = #(tileString:match("[^\n]+"))
-
-  local startx, starty = 1,1
-  local endx, endy = 5,1
+  local start = nil
+  local waypoint = Waypoint:new()
 
   local rowIndex,columnIndex = 1,1
   for row in tileString:gmatch("[^\n]+") do
@@ -88,19 +87,16 @@ b----------d------------i
     PrintTable = PrintTable .. rowIndex .. "{ "
 
     for character in row:gmatch(".") do
-      if character == " " or character == "s" or character == "f" then
+      if character == " " or character == "s" or character == "x" then
         if character == "s" then
-          startx = columnIndex
-          PlayerX = columnIndex
-          starty = rowIndex
-          PlayerY = rowIndex
+          start = Point:new(columnIndex, rowIndex)
           WalkTable[rowIndex][columnIndex] = 0
           PrintTable = PrintTable .. "s, "
-        elseif character == "f" then
-          endx = columnIndex
-          endy = rowIndex
+        elseif character == "x" then
+          local point = Point:new(columnIndex, rowIndex)
+          waypoint:addWaypoint(point)
           WalkTable[rowIndex][columnIndex] = 0
-          PrintTable = PrintTable .. "f, "
+          PrintTable = PrintTable .. "x, "
         else
           WalkTable[rowIndex][columnIndex] = 0
           PrintTable = PrintTable .. " , "
@@ -118,30 +114,23 @@ b----------d------------i
   end
 
   print(PrintTable)
-  print(startx)
-  print(starty)
 
-  local Grid = require ("lib.jumper.grid") -- The grid class
-  local Pathfinder = require ("lib.jumper.pathfinder") -- The pathfinder class
+  Being:moveTo(start)
 
   local walkable = 0
-  -- Creates a grid object
-  local grid = Grid(WalkTable) 
-  -- Creates a pathfinder object using Jump Point Search
-  local myFinder = Pathfinder(grid, 'ASTAR', walkable)
-  myFinder:setMode('ORTHOGONAL')
-  local path = myFinder:getPath(startx, starty, endx, endy)
+  waypoint:insertWaypoint(start, 1)
+  waypoint:setWalkTable(WalkTable, walkable)
+
+  waypoint:calculate()
 
   Path = {}
-
-  if path then
-    print(('Path found! Length: %.2f'):format(path:getLength()))
-    for node, count in path:nodes() do
-      table.insert(Path, node)
-      print(('Step: %d - x: %d - y: %d'):format(count, node:getX(), node:getY()))
+  if waypoint:length() > 0 then
+    for index,point in waypoint:path() do
+      table.insert(Path, point)
+      print(('Step %d - x: %d - y: %d'):format(index, point.x, point.y))
     end
   end
-  Next = table.remove(Path, 1)
+  Next = table.remove(Path)
 end
 
 function love.update(dt)
@@ -150,18 +139,20 @@ function love.update(dt)
   end
 
   if Next ~= nil then
-    NextX = Next:getX()
-    NextY = Next:getY()
+    NextX = Next.x
+    NextY = Next.y
   end
 
-  local dx = NextX - PlayerX
-  local dy = NextY - PlayerY
+  local dx = NextX - Being.position.x
+  local dy = NextY - Being.position.y
 
-  PlayerX = PlayerX + dx * Speed * dt
-  PlayerY = PlayerY + dy * Speed * dt
+  local x = Being.position.x + dx * Speed * dt
+  local y = Being.position.y + dy * Speed * dt
+  local newPosition = Point:new(x, y)
+  Being:moveTo(newPosition)
 
   if math.abs(dx) < 0.4 and math.abs(dy) < 0.4 and Next ~= nil then
-    Next = table.remove(Path, 1)
+    Next = table.remove(Path)
   end
 
   if math.abs(dx) < 0.01 and math.abs(dy) < 0.01 and Next == nil then
@@ -183,5 +174,5 @@ function love.draw()
       love.graphics.draw(Tileset, Quads[char], x, y)
     end
   end
-  love.graphics.draw(Tileset, PlayerQuad, (PlayerX - 1) * TileW, (PlayerY - 1 ) * TileH)
+  love.graphics.draw(Tileset, Being.quad, (Being.position.x - 1) * TileW, (Being.position.y - 1 ) * TileH)
 end
