@@ -16,7 +16,7 @@ Done = false
 Speed = 5
 
 function love.load()
-  Tileset = love.graphics.newImage("resources/gameboy-fantasy.png");
+  Tileset = love.graphics.newImage("assets/images/gameboy-fantasy.png");
 
   local tilesetW, tilesetH = Tileset:getWidth(), Tileset:getHeight()
 
