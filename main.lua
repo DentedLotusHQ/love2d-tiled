@@ -1,5 +1,16 @@
 class = require("lib.middleclass") -- make class Global for everything
 
+-- Screen stuff
+local push = require("lib.push")
+local gameWidth = 800
+local gameHeight = 600
+
+local windowWidth, windowHeight = love.window.getDesktopDimensions()
+windowHeight = windowHeight*0.7
+windowWidth = windowWidth*0.7--make the window a bit smaller than the screen itself
+
+push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = false})
+
 -- There are now local to this file
 local Waypoint = require("game.waypoint")
 local Point = require("game.point")
@@ -18,9 +29,10 @@ NextY = nil
 
 Done = false
 
-Speed = 5
+Speed = 7.5
 
 function love.load()
+  love.graphics.setDefaultFilter('nearest', 'nearest')
   Tileset = love.graphics.newImage("assets/images/gameboy-fantasy.png");
 
   local tilesetW, tilesetH = Tileset:getWidth(), Tileset:getHeight()
@@ -153,7 +165,7 @@ function love.update(dt)
   local newPosition = Point:new(x, y)
   Being:moveTo(newPosition)
 
-  if math.abs(dx) < 0.4 and math.abs(dy) < 0.4 and Next ~= nil then
+  if math.floor(dx + 0.5) == 0 and math.floor(dy + 0.5) == 0 and Next ~= nil then
     Next = table.remove(Path)
   end
 
@@ -170,11 +182,13 @@ function love.keypressed(key)
 end
 
 function love.draw()
+  push:start()
   for rowIndex, row in ipairs(TileTable) do
     for columnIndex, char in ipairs(row) do
       local x,y = (columnIndex - 1) * TileW, (rowIndex - 1) * TileH
       love.graphics.draw(Tileset, Quads[char], x, y)
     end
   end
-  love.graphics.draw(Tileset, Being.quad, (Being.position.x - 1) * TileW, (Being.position.y - 1 ) * TileH)
+  love.graphics.draw(Tileset, Being.quad, math.floor((Being.position.x - 1) + 0.5) * TileW, math.floor((Being.position.y - 1 ) + 0.5) * TileH)
+  push:finish()
 end
