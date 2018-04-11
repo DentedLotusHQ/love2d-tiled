@@ -79,7 +79,7 @@ w   #  # #* # #  * # x  v
 w    ##  ###  ###  #    v
 w                       v
 w   *****************   v
-w           s           v
+w            x          v
 w  *              x   * v
 b----------d------------i
 ]]
@@ -101,8 +101,8 @@ b----------d------------i
     PrintTable = PrintTable .. rowIndex .. "{ "
 
     for character in row:gmatch(".") do
-      if character == " " or character == "s" or character == "x" then
-        if character == "s" then
+      if character == " " or character == "d" or character == "x" then
+        if character == "d" then
           start = Point:new(columnIndex, rowIndex)
           WalkTable[rowIndex][columnIndex] = 0
           PrintTable = PrintTable .. "s, "
