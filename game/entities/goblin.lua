@@ -1,8 +1,14 @@
-Goblin = class("Goblin")
+local Goblin = class("Goblin")
+
+local Grid = require ("lib.jumper.grid")
+local Pathfinder = require ("lib.jumper.pathfinder")
+
+local Waypoint = require("game.waypoint")
 
 function Goblin:initialize(quad)
   self.quad = quad
-  self.position = nil
+  -- self.speed = speed
+  -- self.position = start
 end
 
 function Goblin:moveTo(point)
