@@ -109,16 +109,16 @@ function Tilemap:draw()
 	if tx < 0 then 
 		tx = 0 
 	end
-	if tx > map.width  * map.tilewidth  - love.graphics.getWidth()  then
-		tx = map.width  * map.tilewidth  - love.graphics.getWidth()  
+	if tx > self.map.width * self.map.tilewidth  - love.graphics.getWidth()  then
+		tx = self.map.width * self.map.tilewidth  - love.graphics.getWidth()  
 	end
-	if ty > map.height * map.tileheight - love.graphics.getHeight() then
-		ty = map.height * map.tileheight - love.graphics.getHeight()
+	if ty > self.map.height * self.map.tileheight - love.graphics.getHeight() then
+		ty = self.map.height * self.map.tileheight - love.graphics.getHeight()
 	end
 
 	tx = math.floor(tx)
   ty = math.floor(ty)
-  map:draw(-tx, -ty, self.camera.scale, self.camera.scale)
+  self.map:draw(-tx, -ty, self.camera.scale, self.camera.scale)
 end
 
 return Tilemap

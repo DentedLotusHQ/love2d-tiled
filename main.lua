@@ -29,7 +29,6 @@ function love.load()
   GameWorld = Tilemap:new(Goblin, "goblins")
   GameWorld:load(config, camera)
 
-  camera = require("game.entities.camera"):new(input, GameWorld)
   local hud = Hud:new(push:getWidth(), push:getHeight(), love.graphics)
 end
 
@@ -78,7 +77,7 @@ function love.draw()
   -- camera:detach()
 
   push:finish()
-  camera:unset()
+  -- camera:unset()
 end
 
 function love.wheelmoved(x, y)
