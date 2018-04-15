@@ -14,7 +14,7 @@ function Goblin:initialize(tileset, quad, movementSpeed, start, map, size, graph
   self.quad = quad
   self.movementSpeed = movementSpeed
   self.map = map
-  self.waypoints = self.map:getPoints("waypoint")
+  self.waypoints = self.map:getPoints("food")
   self._waypointIndex = 1
   self.path = {}
   self.next = nil
