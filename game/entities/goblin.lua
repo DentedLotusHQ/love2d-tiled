@@ -49,7 +49,10 @@ function Goblin:move(dt)
     -- -- get our next waypoint
     -- local waypoint = self.waypoints[self._waypointIndex]
     -- local finish = Point:new(waypoint.x, waypoint.y)
-    if self._currentTasks:size() == 0 then self:createWaypoints() end
+    if self._currentTasks:size() == 0 then
+      self:createWaypoints()
+    end
+
     local finish = self._currentTasks:pop()
 
     -- increment the index into the waypoints table.
@@ -62,7 +65,6 @@ function Goblin:move(dt)
 
     local start_x = math.floor(self.position.x + 0.5)
     local start_y = math.floor(self.position.y + 0.5)
-
     local path = self._pathFinder:getPath(start_x, start_y, finish.x, finish.y)
 
     -- assumes path is not nil
@@ -94,7 +96,7 @@ function Goblin:move(dt)
 end
 
 function Goblin:draw()  
-  self.graphics.draw(self.tileset, self.quad, self.position.x * self.size.x, self.position.y * self.size.y)
+  self.graphics.draw(self.tileset, self.quad, (self.position.x - 1) * self.size.x, (self.position.y - 1) * self.size.y)
 end
 
 return Goblin
