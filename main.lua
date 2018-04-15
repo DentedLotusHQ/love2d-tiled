@@ -3,8 +3,8 @@ class = require("lib.middleclass") -- make class Global for everything
 -- Screen stuff
 local push = require("lib.push")
 local log = require("lib.log")
-local gameWidth = 800
-local gameHeight = 600
+local gameWidth = 1440
+local gameHeight = 900
 
 local windowWidth, windowHeight = love.window.getDesktopDimensions()
 windowHeight = windowHeight*0.7
@@ -18,6 +18,7 @@ drawables = require("game.entities.drawable_list"):new()
 local Point = require("game.point")
 local Goblin = require("game.entities.goblin")
 local Map = require("game.entities.map")
+local Tilemap = require("game.entities.tilemap")
 
 Tileset = nil
 TileW, TileH = 16, 16
@@ -39,9 +40,8 @@ function love.load()
 
   local quad = love.graphics.newQuad(TileW, TileH * 20, TileW, TileH, tilesetW, tilesetH)
 
-  local start = nil
-
-  GameWorld = Map:new(Tileset, quadInfo, mapString, TileW, TileH, love.graphics)
+  GameWorld = Tilemap:new(Tileset, quadInfo, mapString, TileW, TileH, love.graphics)
+  GameWorld:load("game/maps/test-map.lua")--Map:new(Tileset, quadInfo, mapString, TileW, TileH, love.graphics)
   local goblinPoints = GameWorld:getPoints("spawn")
 
   for _, point in ipairs(goblinPoints) do

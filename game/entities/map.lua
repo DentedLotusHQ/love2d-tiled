@@ -1,4 +1,5 @@
 local Map = class("Map")
+local STI = require("lib.sti")
 
 local Point = require("game.point")
 
