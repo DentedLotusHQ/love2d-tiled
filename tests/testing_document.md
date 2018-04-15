@@ -21,7 +21,7 @@
         "type":"shell",
         "command": "busted",
         "args": [
-          "tests/**/*"
+          "tests/**"
         ],
         "group":{
           "kind": "test",
