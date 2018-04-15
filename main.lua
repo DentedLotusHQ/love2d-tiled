@@ -2,6 +2,7 @@ class = require("lib.middleclass") -- make class Global for everything
 
 -- Screen stuff
 local push = require("lib.push")
+local log = require("lib.log")
 local gameWidth = 800
 local gameHeight = 600
 
@@ -14,7 +15,6 @@ push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen =
 -- There are now local to this file
 updatables = require("game.entities.update_list"):new()
 drawables = require("game.entities.drawable_list"):new()
-local Waypoint = require("game.waypoint")
 local Point = require("game.point")
 local Goblin = require("game.entities.goblin")
 local Map = require("game.entities.map")
@@ -40,7 +40,6 @@ function love.load()
   local quad = love.graphics.newQuad(TileW, TileH * 20, TileW, TileH, tilesetW, tilesetH)
 
   local start = nil
-  local waypoint = Waypoint:new()
 
   GameWorld = Map:new(Tileset, quadInfo, mapString, TileW, TileH)
   local goblinPoints = GameWorld:getPoints("spawn")
