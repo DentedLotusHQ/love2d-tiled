@@ -20,7 +20,11 @@ GameWorld = nil
 function love.load()
   local setup = require("game.utilities.screen")
   setup()
-  Tileset = love.graphics.newImage("assets/images/gameboy-fantasy.png");
+
+  local parseConfig = require("config")
+  local config = parseConfig()
+
+  Tileset = love.graphics.newImage("assets/images/gameboy-fantasy.png")
 
   local tilesetW, tilesetH = Tileset:getWidth(), Tileset:getHeight()
 
@@ -32,10 +36,10 @@ function love.load()
 
   GameWorld = Tilemap:new(Tileset, quadInfo, mapString, TileW, TileH, love.graphics)
   GameWorld:load("game/maps/test-map.lua")--Map:new(Tileset, quadInfo, mapString, TileW, TileH, love.graphics)
-  local goblinPoints = GameWorld:getPoints("spawn")
 
+  local goblinPoints = GameWorld:getPoints("spawn")
   for _, point in ipairs(goblinPoints) do
-    Being = Goblin:new(Tileset, quad, Speed, point, GameWorld, TileW, TileH, love.graphics)
+    Being = Goblin:new(config.goblins, point, GameWorld, love.graphics)
   end
 
 end
