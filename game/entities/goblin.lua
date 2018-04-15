@@ -4,7 +4,7 @@ local Grid = require ("lib.jumper.grid")
 local Pathfinder = require ("lib.jumper.pathfinder")
 local Point = require("game.point")
 
-function Goblin:initialize(tileset, quad, speed, start, map, tileW, tileH)
+function Goblin:initialize(tileset, quad, speed, start, map, tileW, tileH, graphics)
   self.tileset = tileset
   self.quad = quad
   self.speed = speed
@@ -23,6 +23,13 @@ function Goblin:initialize(tileset, quad, speed, start, map, tileW, tileH)
   self._pathFinder:setMode('ORTHOGONAL')
   self.tileW = tileW
   self.tileH = tileH
+  self.graphics = graphics
+  updatables:add(self, 'player')
+  drawables:add(self, 'player')
+end
+
+function Goblin:update(dt)
+  self:move(dt)
 end
 
 function Goblin:move(dt)
@@ -77,8 +84,8 @@ function Goblin:moveTo(point)
   self.position = point
 end
 
-function Goblin:draw(graphics)
-  graphics.draw(self.tileset, self.quad, math.floor((self.position.x - 1) + 0.5) * self.tileW, math.floor((self.position.y - 1 ) + 0.5) * self.tileH)
+function Goblin:draw()  
+  self.graphics.draw(self.tileset, self.quad, math.floor((self.position.x - 1) + 0.5) * self.tileW, math.floor((self.position.y - 1 ) + 0.5) * self.tileH)
 end
 
 return Goblin

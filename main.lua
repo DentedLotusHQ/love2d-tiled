@@ -9,9 +9,11 @@ local windowWidth, windowHeight = love.window.getDesktopDimensions()
 windowHeight = windowHeight*0.7
 windowWidth = windowWidth*0.7--make the window a bit smaller than the screen itself
 
-push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = false})
+push:setupScreen(gameWidth, gameHeight, windowWidth, windowHeight, {fullscreen = true})
 
 -- There are now local to this file
+updatables = require("game.entities.update_list"):new()
+drawables = require("game.entities.drawable_list"):new()
 local Waypoint = require("game.waypoint")
 local Point = require("game.point")
 local Goblin = require("game.entities.goblin")
@@ -44,13 +46,13 @@ function love.load()
   local goblinPoints = GameWorld:getPoints("spawn")
 
   for _, point in ipairs(goblinPoints) do
-    Being = Goblin:new(Tileset, quad, Speed, point, GameWorld, TileW, TileH)
+    Being = Goblin:new(Tileset, quad, Speed, point, GameWorld, TileW, TileH, love.graphics)
   end
 
 end
 
 function love.update(dt)
-  Being:move(dt)
+  updatables:update(dt)
 end
 
 function love.keypressed(key)
@@ -62,6 +64,7 @@ end
 function love.draw()
   push:start()
   GameWorld:draw(love.graphics)
-  Being:draw(love.graphics)
+  drawables:draw()
+  -- Being:draw(love.graphics)
   push:finish()
 end
