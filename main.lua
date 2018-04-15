@@ -8,6 +8,7 @@ local Point = require("game.point")
 local Goblin = require("game.entities.goblin")
 local Map = require("game.entities.map")
 local Tilemap = require("game.entities.tilemap")
+local Vector2 = require("game.point")
 
 Tileset = nil
 TileW, TileH = 16, 16
@@ -31,11 +32,11 @@ function love.load()
   local quad = love.graphics.newQuad(TileW, TileH * 20, TileW, TileH, tilesetW, tilesetH)
 
   GameWorld = Tilemap:new(Tileset, quadInfo, mapString, TileW, TileH, love.graphics)
-  GameWorld:load("game/maps/test-map.lua")--Map:new(Tileset, quadInfo, mapString, TileW, TileH, love.graphics)
+  GameWorld:load("game/maps/test-map.lua")
   local goblinPoints = GameWorld:getPoints("spawn")
 
   for _, point in ipairs(goblinPoints) do
-    Being = Goblin:new(Tileset, quad, Speed, point, GameWorld, TileW, TileH, love.graphics)
+    Being = Goblin:new(Tileset, quad, Speed, point, GameWorld, Vector2:new(TileW, TileH), love.graphics)
   end
 
 end

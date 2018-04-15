@@ -1,16 +1,16 @@
 local class = require("lib.middleclass")
-
-local Goblin = class("Goblin")
+local Entity = require("game.entities.base_classes.entity")
+local Goblin = class("Goblin", Entity)
 
 local Grid = require ("lib.jumper.grid")
 local Pathfinder = require ("lib.jumper.pathfinder")
 local Point = require("game.point")
 
-function Goblin:initialize(tileset, quad, speed, start, map, tileW, tileH, graphics)
+function Goblin:initialize(tileset, quad, movementSpeed, start, map, size, graphics)
+  Entity:initialize(start, size)
   self.tileset = tileset
   self.quad = quad
-  self.speed = speed
-  self.position = Point:new(start.x, start.y)
+  self.movementSpeed = movementSpeed
   self.map = map
   self.waypoints = self.map:getPoints("waypoint")
 
@@ -23,8 +23,6 @@ function Goblin:initialize(tileset, quad, speed, start, map, tileW, tileH, graph
   self._grid = Grid(walkTable)
   self._pathFinder = Pathfinder(self._grid, 'ASTAR', walkable)
   self._pathFinder:setMode('ORTHOGONAL')
-  self.tileW = tileW
-  self.tileH = tileH
   self.graphics = graphics
   updatables:add(self, 'player')
   drawables:add(self, 'player')
@@ -69,8 +67,8 @@ function Goblin:move(dt)
   local dx = self.next.x - self.position.x
   local dy = self.next.y - self.position.y
 
-  local x = self.position.x + dx * self.speed * dt
-  local y = self.position.y + dy * self.speed * dt
+  local x = self.position.x + dx * self.movementSpeed * dt
+  local y = self.position.y + dy * self.movementSpeed * dt
   self.position = Point:new(x, y)
 
   if math.floor(dx + 0.5) == 0 and math.floor(dy + 0.5) == 0 and self.next ~= nil then
@@ -83,7 +81,7 @@ function Goblin:move(dt)
 end
 
 function Goblin:draw()  
-  self.graphics.draw(self.tileset, self.quad, math.floor((self.position.x - 1) + 0.5) * self.tileW, math.floor((self.position.y - 1 ) + 0.5) * self.tileH)
+  self.graphics.draw(self.tileset, self.quad, self.position.x * self.size.x, self.position.y * self.size.y)
 end
 
 return Goblin
