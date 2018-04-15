@@ -1,3 +1,5 @@
+local class = require("lib.middleclass")
+
 local Map = class("Map")
 local STI = require("lib.sti")
 

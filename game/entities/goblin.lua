@@ -1,3 +1,5 @@
+local class = require("lib.middleclass")
+
 local Goblin = class("Goblin")
 
 local Grid = require ("lib.jumper.grid")
@@ -78,10 +80,6 @@ function Goblin:move(dt)
   -- if math.abs(dx) < 0.01 and math.abs(dy) < 0.01 and self.next == nil then
   --   self.idle = true
   -- end
-end
-
-function Goblin:moveTo(point)
-  self.position = point
 end
 
 function Goblin:draw()  
