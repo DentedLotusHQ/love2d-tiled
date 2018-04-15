@@ -4,14 +4,17 @@ local Point = require("game.point")
 
 local insert = table.insert
 
-function Map:initialize(tileSet, quadInfo, tileString, tileW, tileH)
+function Map:initialize(tileSet, quadInfo, tileString, tileW, tileH, graphics)
   self.tileSet = tileSet
   local tilesetW, tilesetH = self.tileSet:getWidth(), self.tileSet:getHeight()
   self.quadInfo = quadInfo
   self.tileW = tileW
   self.tileH = tileH
+  self.graphics = graphics
   self.quads, self.entityMap = getQuads(quadInfo, self.tileW, self.tileH, tilesetW, tilesetH)
   self.tileTable, self.walkTable, self.pointLists = parseString(tileString)
+  updatables:add(self, 'map')
+  drawables:add(self, 'map')
 end
 
 function Map:getPoints(entity)
@@ -26,11 +29,15 @@ function Map:addPoint(character, point)
   insert(self.pointLists[character], point)
 end
 
-function Map:draw(graphics)
+function Map:update(dt)
+
+end
+
+function Map:draw()
   for rowIndex, row in ipairs(self.tileTable) do
     for columnIndex, char in ipairs(row) do
       local x,y = (columnIndex - 1) * self.tileW, (rowIndex - 1) * self.tileH
-      graphics.draw(self.tileSet, self.quads[char], x, y)
+      self.graphics.draw(self.tileSet, self.quads[char], x, y)
     end
   end
 end

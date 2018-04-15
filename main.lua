@@ -42,7 +42,7 @@ function love.load()
   local start = nil
   local waypoint = Waypoint:new()
 
-  GameWorld = Map:new(Tileset, quadInfo, mapString, TileW, TileH)
+  GameWorld = Map:new(Tileset, quadInfo, mapString, TileW, TileH, love.graphics)
   local goblinPoints = GameWorld:getPoints("spawn")
 
   for _, point in ipairs(goblinPoints) do
@@ -63,8 +63,6 @@ end
 
 function love.draw()
   push:start()
-  GameWorld:draw(love.graphics)
   drawables:draw()
-  -- Being:draw(love.graphics)
   push:finish()
 end
