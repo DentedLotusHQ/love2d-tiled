@@ -12,7 +12,8 @@ function Tilemap:initialize(being_class, config_key)
   drawables:add(self, "map")
 end
 
-function Tilemap:load(config)
+function Tilemap:load(config, camera)
+  self.camera = camera
   local mapLocator = config.world.map
   local dynamic = Dynamic:new(config.world.map)
   -- randomize the ground layer of the map
@@ -102,6 +103,22 @@ function Tilemap:draw()
   -- Draw the map and all objects within
   love.graphics.setColor(255, 255, 255)
   -- self.map:draw(1, 1, 0.45, 0.45)
+
+  local tx = self.camera.x - love.graphics.getWidth() / 2
+	local ty = self.camera.y - love.graphics.getHeight() / 2
+	if tx < 0 then 
+		tx = 0 
+	end
+	if tx > map.width  * map.tilewidth  - love.graphics.getWidth()  then
+		tx = map.width  * map.tilewidth  - love.graphics.getWidth()  
+	end
+	if ty > map.height * map.tileheight - love.graphics.getHeight() then
+		ty = map.height * map.tileheight - love.graphics.getHeight()
+	end
+
+	tx = math.floor(tx)
+  ty = math.floor(ty)
+  map:draw(-tx, -ty, self.camera.scale, self.camera.scale)
 end
 
 return Tilemap
