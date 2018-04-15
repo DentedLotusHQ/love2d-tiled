@@ -9,7 +9,6 @@ local Stack = require("game.utilities.stack")
 
 function Goblin:initialize(config, start, map)
   local size = config.tileWidth
-  print(size)
   Entity:initialize(start, size)
   self._currentTasks = Stack:new()
   self.tileset = love.graphics.newImage(config.tileset)
@@ -27,8 +26,6 @@ function Goblin:initialize(config, start, map)
   self._grid = Grid(walkTable)
   self._pathFinder = Pathfinder(self._grid, 'ASTAR', walkable)
   self._pathFinder:setMode('ORTHOGONAL')
-  updatables:add(self, 'player')
-  drawables:add(self, 'player')
 end
 
 function Goblin:addTask(task)
@@ -83,7 +80,6 @@ function Goblin:move(dt)
 
   local dx = self.next.x - self.position.x
   local dy = self.next.y - self.position.y
-
   local x = self.position.x + dx * self.movementSpeed * dt
   local y = self.position.y + dy * self.movementSpeed * dt
   self.position = Point:new(x, y)
@@ -91,13 +87,9 @@ function Goblin:move(dt)
   if math.floor(dx + 0.5) == 0 and math.floor(dy + 0.5) == 0 and self.next ~= nil then
     self.next = table.remove(self.path, 1)
   end
-
-  -- if math.abs(dx) < 0.01 and math.abs(dy) < 0.01 and self.next == nil then
-  --   self.idle = true
-  -- end
 end
 
-function Goblin:draw()  
+function Goblin:draw()
   love.graphics.draw(self.tileset, self.quad, (self.position.x - 1) * self.size, (self.position.y - 1) * self.size)
 end
 
