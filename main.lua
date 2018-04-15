@@ -9,6 +9,8 @@ local Goblin = require("game.entities.goblin")
 local Map = require("game.entities.map")
 local Tilemap = require("game.entities.tilemap")
 local Vector2 = require("game.point")
+local Camera = require("game.entities.camera")
+local camera = Camera:new()
 
 Tileset = nil
 TileW, TileH = 16, 16
@@ -46,6 +48,7 @@ function love.load()
 end
 
 function love.update(dt)
+  camera:checkInputs(dt)
   updatables:update(dt)
 end
 
@@ -56,6 +59,7 @@ function love.keypressed(key)
 end
 
 function love.draw()
+  camera:moveCamera()
   push:start()
   drawables:draw()
   push:finish()
