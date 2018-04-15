@@ -6,10 +6,13 @@ local Grid = require ("lib.jumper.grid")
 local Pathfinder = require ("lib.jumper.pathfinder")
 local Point = require("game.point")
 
-function Goblin:initialize(tileset, quad, speed, start, map, tileW, tileH, graphics)
-  self.tileset = tileset
-  self.quad = quad
-  self.speed = speed
+function Goblin:initialize(config, start, map, graphics)
+  self.tileset = love.graphics.newImage(config.tileset)
+  local tilesetW, tilesetH = Tileset:getWidth(), Tileset:getHeight()
+  self.tileW = config.tileWidth
+  self.tileH = config.tileHeight
+  self.quad = love.graphics.newQuad(self.tileW, self.tileH * 20, self.tileH, self.tileH, tilesetW, tilesetH)
+  self.speed = config.speed
   self.position = Point:new(start.x, start.y)
   self.map = map
   self.waypoints = self.map:getPoints("waypoint")
@@ -23,8 +26,6 @@ function Goblin:initialize(tileset, quad, speed, start, map, tileW, tileH, graph
   self._grid = Grid(walkTable)
   self._pathFinder = Pathfinder(self._grid, 'ASTAR', walkable)
   self._pathFinder:setMode('ORTHOGONAL')
-  self.tileW = tileW
-  self.tileH = tileH
   self.graphics = graphics
   updatables:add(self, 'player')
   drawables:add(self, 'player')
