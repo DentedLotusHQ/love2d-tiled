@@ -1,3 +1,5 @@
+local class = require("lib.middleclass")
+
 local List = class('List')
 
 function List:initialize()
