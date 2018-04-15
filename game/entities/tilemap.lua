@@ -1,4 +1,5 @@
 local Map = require("game.entities.map")
+local class = require("lib.middleclass")
 local Tilemap = class("Tilemap", Map)
 local sti = require("lib.sti")
 
