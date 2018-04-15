@@ -13,7 +13,11 @@ function Stack:push(obj)
 end
 
 function Stack:pop()
-  table.remove(self._stack,#self._stack)
+  return table.remove(self._stack,#self._stack)
+end
+
+function Stack:size()
+  return #self._stack
 end
 
 return Stack

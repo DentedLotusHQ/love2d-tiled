@@ -5,19 +5,20 @@ local Goblin = class("Goblin", Entity)
 local Grid = require ("lib.jumper.grid")
 local Pathfinder = require ("lib.jumper.pathfinder")
 local Point = require("game.point")
+local Stack = require("game.utilities.stack")
 
 function Goblin:initialize(tileset, quad, movementSpeed, start, map, size, graphics)
   Entity:initialize(start, size)
+  self._currentTasks = Stack:new()
   self.tileset = tileset
   self.quad = quad
   self.movementSpeed = movementSpeed
   self.map = map
   self.waypoints = self.map:getPoints("waypoint")
-
   self._waypointIndex = 1
   self.path = {}
   self.next = nil
-
+  self:createWaypoints()
   local walkTable = self.map.walkTable
   local walkable = 0
   self._grid = Grid(walkTable)
@@ -28,24 +29,36 @@ function Goblin:initialize(tileset, quad, movementSpeed, start, map, size, graph
   drawables:add(self, 'player')
 end
 
+function Goblin:addTask(task)
+  self._currentTasks:push(task)
+end
+
 function Goblin:update(dt)
   self:move(dt)
+end
+
+function Goblin:createWaypoints()
+  for i=1, #self.waypoints do
+    self._currentTasks:push(self.waypoints[i])
+  end
 end
 
 function Goblin:move(dt)
   -- if next is nil, then we need to compute a new path
   if self.next == nil then
-    -- get our next waypoint
-    local waypoint = self.waypoints[self._waypointIndex]
-    local finish = Point:new(waypoint.x, waypoint.y)
+    -- -- get our next waypoint
+    -- local waypoint = self.waypoints[self._waypointIndex]
+    -- local finish = Point:new(waypoint.x, waypoint.y)
+    if self._currentTasks:size() == 0 then self:createWaypoints() end
+    local finish = self._currentTasks:pop()
 
     -- increment the index into the waypoints table.
     -- if it's too large, then set it back to the beginning
     -- We'll just loop all the waypoints over and over again
-    self._waypointIndex = self._waypointIndex + 1
-    if self._waypointIndex > #self.waypoints then
-      self._waypointIndex = 1
-    end
+    -- self._waypointIndex = self._waypointIndex + 1
+    -- if self._waypointIndex > #self.waypoints then
+    --   self._waypointIndex = 1
+    -- end
 
     local start_x = math.floor(self.position.x + 0.5)
     local start_y = math.floor(self.position.y + 0.5)
