@@ -6,8 +6,6 @@
     "speed": 5
   },
   "world": {
-    "tileset": "assets/images/gameboy-fantasy.png",
-    "tileWidth": 16,
-    "tileHeight": 16
+    "map": "game/maps/test-map.lua"
   }
 }
