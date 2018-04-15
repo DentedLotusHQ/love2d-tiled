@@ -12,9 +12,9 @@ function Tilemap:load(mapLocator)
   self.height = self.map.height
   self.tileheight = self.map.tileheight
   world = love.physics.newWorld(0, 0)
-  map:box2d_init(world)
+  self.map:box2d_init(world)
   self.entities = {}
-  local walls = map.layers["walls"]
+  local walls = self.map.layers["walls"]
   local walkTable = {}
 
   if walls ~= nil then
@@ -30,7 +30,7 @@ function Tilemap:load(mapLocator)
     end
   end
 
-  local spawn = map.layers["spawn"]
+  local spawn = self.map.layers["spawn"]
   self.entities["spawn"] = {}
   if spawn ~= nil then
     for y,xTable in pairs(spawn.data) do
@@ -41,7 +41,7 @@ function Tilemap:load(mapLocator)
     end
   end
 
-  local food = map.layers["food"]
+  local food = self.map.layers["food"]
   self.entities["food"] = {}
 
   if food ~= nil then
