@@ -1,3 +1,5 @@
+local class = require("lib.middleclass")
+
 local List = require("game.utilities.list")
 local UpdateList = class('UpdateList', List)
 
