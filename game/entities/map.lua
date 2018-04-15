@@ -16,8 +16,6 @@ function Map:initialize(tileSet, quadInfo, tileString, tileW, tileH, graphics)
   self.graphics = graphics
   self.quads, self.entityMap = getQuads(quadInfo, self.tileW, self.tileH, tilesetW, tilesetH)
   self.tileTable, self.walkTable, self.pointLists = parseString(tileString)
-  updatables:add(self, 'map')
-  drawables:add(self, 'map')
 end
 
 function Map:getPoints(entity)

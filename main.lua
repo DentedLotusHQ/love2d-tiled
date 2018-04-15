@@ -1,6 +1,7 @@
 -- Screen stuff
 local push = require("lib.push")
 local log = require("lib.log")
+
 -- There are now local to this file
 updatables = require("game.entities.update_list"):new()
 drawables = require("game.entities.drawable_list"):new()
@@ -11,13 +12,14 @@ local Tilemap = require("game.entities.tilemap")
 
 local Vector2 = require("game.point")
 local Camera = require("game.entities.camera")
-local camera = Camera:new()
+local input = require("game.managers.input"):new()
 local Hud = require("game.ui.hud")
 Tileset = nil
 TileW, TileH = 16, 16
 
 Being = nil
 Speed = 5
+local camera = nil
 
 GameWorld = nil
 
@@ -46,6 +48,7 @@ function love.load()
     Being = Goblin:new(Tileset, quad, Speed, point, GameWorld, Vector2:new(TileW, TileH), love.graphics)
   end
 
+  camera = require("game.entities.camera"):new(input, GameWorld)
   local hud = Hud:new(push:getWidth(), push:getHeight(), love.graphics)
 end
 
@@ -61,8 +64,13 @@ function love.keypressed(key)
 end
 
 function love.draw()
-  camera:moveCamera()
+  camera:set()
   push:start()
   drawables:draw()
   push:finish()
+  camera:unset()
+end
+
+function love.wheelmoved(x, y)
+  input._scrollDelta = y
 end
