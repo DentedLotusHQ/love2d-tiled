@@ -4,7 +4,8 @@ local Tilemap = class("Tilemap", Map)
 local Point = require("game.point")
 local sti = require("lib.sti")
 
-function Tilemap:load(mapLocator)
+function Tilemap:load(config)
+  local mapLocator = config.map
   love.physics.setMeter(16)
   map = sti(mapLocator, { "box2d" })
   world = love.physics.newWorld(0, 0)
