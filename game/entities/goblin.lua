@@ -7,12 +7,15 @@ local Pathfinder = require ("lib.jumper.pathfinder")
 local Point = require("game.point")
 local Stack = require("game.utilities.stack")
 
-function Goblin:initialize(tileset, quad, movementSpeed, start, map, size, graphics)
+function Goblin:initialize(config, start, map)
+  local size = config.tileWidth
+  print(size)
   Entity:initialize(start, size)
   self._currentTasks = Stack:new()
-  self.tileset = tileset
-  self.quad = quad
-  self.movementSpeed = movementSpeed
+  self.tileset = love.graphics.newImage(config.tileset)
+  local tilesetW, tilesetH = self.tileset:getWidth(), self.tileset:getHeight()
+  self.quad = love.graphics.newQuad(size, size * 20, size, size, tilesetW, tilesetH)
+  self.movementSpeed = config.speed
   self.map = map
   self.waypoints = self.map:getPoints("food")
   self._waypointIndex = 1
@@ -24,7 +27,6 @@ function Goblin:initialize(tileset, quad, movementSpeed, start, map, size, graph
   self._grid = Grid(walkTable)
   self._pathFinder = Pathfinder(self._grid, 'ASTAR', walkable)
   self._pathFinder:setMode('ORTHOGONAL')
-  self.graphics = graphics
   updatables:add(self, 'player')
   drawables:add(self, 'player')
 end
@@ -96,7 +98,7 @@ function Goblin:move(dt)
 end
 
 function Goblin:draw()  
-  self.graphics.draw(self.tileset, self.quad, (self.position.x - 1) * self.size.x, (self.position.y - 1) * self.size.y)
+  love.graphics.draw(self.tileset, self.quad, (self.position.x - 1) * self.size, (self.position.y - 1) * self.size)
 end
 
 return Goblin

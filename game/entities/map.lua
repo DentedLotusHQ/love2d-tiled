@@ -6,7 +6,7 @@ local Point = require("game.point")
 
 local insert = table.insert
 
-function Map:initialize(tileSet, quadInfo, tileString, tileW, tileH, graphics)
+function Map:initialize()
   updatables:add(self, 'map')
   drawables:add(self, 'map')
 end
@@ -19,7 +19,7 @@ function Map:draw()
   for rowIndex, row in ipairs(self.tileTable) do
     for columnIndex, char in ipairs(row) do
       local x,y = (columnIndex - 1) * self.tileW, (rowIndex - 1) * self.tileH
-      self.graphics.draw(self.tileSet, self.quads[char], x, y)
+      love.graphics.draw(self.tileSet, self.quads[char], x, y)
     end
   end
 end

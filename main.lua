@@ -1,9 +1,11 @@
 -- Screen stuff
 local push = require("lib.push")
 local log = require("lib.log")
--- There are now local to this file
+
 updatables = require("game.entities.update_list"):new()
 drawables = require("game.entities.drawable_list"):new()
+
+-- There are now local to this file
 local Point = require("game.point")
 local Goblin = require("game.entities.goblin")
 local Map = require("game.entities.map")
@@ -13,37 +15,23 @@ local Vector2 = require("game.point")
 local Camera = require("game.entities.camera")
 local camera = Camera:new()
 local Hud = require("game.ui.hud")
-Tileset = nil
-TileW, TileH = 16, 16
 
 Being = nil
-Speed = 5
 
 GameWorld = nil
 
 function love.load()
   local setup = require("game.utilities.screen")
   setup()
-  Tileset = love.graphics.newImage("assets/images/gameboy-fantasy.png")
 
   local parseConfig = require("config")
   local config = parseConfig()
 
-  Tileset = love.graphics.newImage("assets/images/gameboy-fantasy.png")
-
-  local tilesetW, tilesetH = Tileset:getWidth(), Tileset:getHeight()
-
-  local getQuadInfo = require("game.maps.quad_info")
-  local quadInfo = getQuadInfo(TileW, TileH)
-  local mapString = require("game.maps.obey")
-
-  local quad = love.graphics.newQuad(TileW, TileH * 20, TileW, TileH, tilesetW, tilesetH)
-
-  GameWorld = Tilemap:new(Tileset, quadInfo, mapString, TileW, TileH, love.graphics)
-  GameWorld:load("game/maps/test-map.lua")
+  GameWorld = Tilemap:new()
+  GameWorld:load(config.world)
   local goblinPoints = GameWorld:getPoints("spawn")
   for _, point in ipairs(goblinPoints) do
-    Being = Goblin:new(Tileset, quad, Speed, point, GameWorld, Vector2:new(TileW, TileH), love.graphics)
+    Being = Goblin:new(config.goblins, point, GameWorld)
   end
 
   local hud = Hud:new(push:getWidth(), push:getHeight(), love.graphics)
