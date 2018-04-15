@@ -8,7 +8,9 @@ local Point = require("game.point")
 local Goblin = require("game.entities.goblin")
 local Map = require("game.entities.map")
 local Tilemap = require("game.entities.tilemap")
+
 local Vector2 = require("game.point")
+local Hud = require("game.ui.hud")
 
 Tileset = nil
 TileW, TileH = 16, 16
@@ -21,6 +23,7 @@ GameWorld = nil
 function love.load()
   local setup = require("game.utilities.screen")
   setup()
+  Tileset = love.graphics.newImage("assets/images/gameboy-fantasy.png")
 
   local parseConfig = require("config")
   local config = parseConfig()
@@ -36,13 +39,15 @@ function love.load()
   local quad = love.graphics.newQuad(TileW, TileH * 20, TileW, TileH, tilesetW, tilesetH)
 
   GameWorld = Tilemap:new(Tileset, quadInfo, mapString, TileW, TileH, love.graphics)
-  GameWorld:load("game/maps/test-map.lua")--Map:new(Tileset, quadInfo, mapString, TileW, TileH, love.graphics)
+  GameWorld:load("game/maps/test-map.lua")
+   --Map:new(Tileset, quadInfo, mapString, TileW, TileH, love.graphics)
 
   local goblinPoints = GameWorld:getPoints("spawn")
   for _, point in ipairs(goblinPoints) do
     Being = Goblin:new(Tileset, quad, Speed, point, GameWorld, Vector2:new(TileW, TileH), love.graphics)
   end
 
+  local hud = Hud:new(push:getWidth(), push:getHeight(), love.graphics)
 end
 
 function love.update(dt)
@@ -50,7 +55,7 @@ function love.update(dt)
 end
 
 function love.keypressed(key)
-  if key == 'escape' then
+  if key == "escape" then
     love.event.quit()
   end
 end
