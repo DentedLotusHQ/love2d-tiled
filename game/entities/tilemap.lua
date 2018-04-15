@@ -24,6 +24,7 @@ function Tilemap:draw()
   -- Draw Collision Map (useful for debugging)
   love.graphics.setColor(255, 0, 0)
   map:box2d_draw()
+  love.graphics.setColor(255, 255, 255)
 end
 
 return Tilemap
