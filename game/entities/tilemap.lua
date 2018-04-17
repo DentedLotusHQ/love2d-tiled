@@ -1,6 +1,6 @@
 local class = require("lib.middleclass")
 local sti = require("lib.sti")
-
+local Dynamic = require("game.maps.dynamic")
 local Point = require("game.point")
 
 local Tilemap = class("Tilemap")
@@ -8,14 +8,17 @@ local Tilemap = class("Tilemap")
 function Tilemap:initialize(being_class, config_key)
   self.being_class = being_class
   self.config_key = config_key
-  updatables:add(self, 'map')
-  drawables:add(self, 'map')
+  updatables:add(self, "map")
+  drawables:add(self, "map")
 end
 
 function Tilemap:load(config)
   local mapLocator = config.world.map
+  local dynamic = Dynamic:new(config.world.map)
+  -- randomize the ground layer of the map
+  dynamic:randomize("ground")
   love.physics.setMeter(16)
-  self.map = sti(mapLocator, { "box2d" })
+  self.map = sti(dynamic:getMap(), {"box2d"})
   self.width = self.map.width
   self.tilewidth = self.map.tilewidth
   self.height = self.map.height
@@ -44,7 +47,7 @@ function Tilemap:load(config)
   self.entities["spawn"] = {}
   local spawnPoint = nil
   if spawn ~= nil then
-    for y,xTable in pairs(spawn.data) do
+    for y, xTable in pairs(spawn.data) do
       for x, _ in pairs(xTable) do
         spawnPoint = Point:new(x, y)
         break
@@ -56,7 +59,7 @@ function Tilemap:load(config)
   self.entities["food"] = {}
 
   if food ~= nil then
-    for y,xTable in pairs(food.data) do
+    for y, xTable in pairs(food.data) do
       for x, _ in pairs(xTable) do
         local point = Point:new(x, y)
         table.insert(self.entities["food"], point)
